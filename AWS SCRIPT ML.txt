@@ -61,10 +61,10 @@ def get_secret():
 
 Important
 
---->AWS CLI connect to local FROM CMD with c:\ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 343430926041.dkr.ecr.us-east-1.amazonaws.com with docker engine on
+--->AWS CLI connect to local FROM CMD with c:\ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 3*********1.dkr.ecr.us-east-1.amazonaws.com with docker engine on
 
 --->docker buildx build --platform=linux/arm64 -t langchain_streamlit:v1 .
---->docker tag langchain_streamlit:v1 343430926041.dkr.ecr.us-east-1.amazonaws.com/langchain_streamlit:v1
+--->docker tag langchain_streamlit:v1 3XXXXXXXXX1.dkr.ecr.us-east-1.amazonaws.com/langchain_streamlit:v1
 --->docker push 343430926041.dkr.ecr.us-east-1.amazonaws.com/langchain_streamlit:v1
 --->docker run -p 8501:8501 langchain_streamlit:v1
 
