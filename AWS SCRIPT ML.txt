@@ -1,0 +1,105 @@
+---> IAM ->Create New User->SECURITY CREDENTIAL---ACCESS KEY--- api_secret_manger creation---download retrieve access key-------
+
+---> Secret Managers --- store secret key ---others OPENAI_API_KEY ----VAlue sk-"" secret name next ---BOTO 3 code              |
+
+--->Create Policy                                       									|
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",											|
+			"Action": "secretsmanager:GetSecretValue",
+			"Resource": "arn:aws:secretsmanager:us-east-1:343430926041:secret:aws-managed-openai-tgGS12"
+		}
+	]
+}
+---->Attach Policy with second step to the user by add permission and attach policy with edit option and link to user		|
+
+AWS CONFIGURE
+
+--->C:\> msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi								|
+--->msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+--->aws --version
+
+--->AWS CONFIGURE														|
+     AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE access key									|
+     AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY secret access key<-----------------------------------
+     Default region name [None]: us-east-1
+     Default output format [None]: 
+
+--->Boto 3 integrate to cpde
+
+def get_secret():
+
+    secret_name = "aws-managed-openai"
+    region_name = "us-east-1"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    
+    except ClientError as e:
+  
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+    secret = json.loads(secret)
+    return str(secret['OPENAI_API_KEY'])
+
+
+
+
+---> TEST CALL ON LOCAL APP
+---> Add streamlit module
+---> Build Dockerfile with requirements.txt
+
+Important
+
+--->AWS CLI connect to local FROM CMD with c:\ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 343430926041.dkr.ecr.us-east-1.amazonaws.com with docker engine on
+
+--->docker buildx build --platform=linux/arm64 -t langchain_streamlit:v1 .
+--->docker tag langchain_streamlit:v1 343430926041.dkr.ecr.us-east-1.amazonaws.com/langchain_streamlit:v1
+--->docker push 343430926041.dkr.ecr.us-east-1.amazonaws.com/langchain_streamlit:v1
+--->docker run -p 8501:8501 langchain_streamlit:v1
+
+--->ECR Repository Creation
+--->PUSH IMAGE
+
+--->ELASstic Container Service
+	HOW the ecs flow works----->CLUSTER->TAsk Definition->Image URI
+
+--->ROLE
+    ROLE-Create Role for Elastic Container Service-->elastic container task
+    Add policy for elastic container task (ecs-task-execution-role-secret)
+    Serch for (ecs-task-execution-role-secret) add permission-create inline policy --Json --Action "secretsmanager:GetSecretValue" Resource    ["arn...secret manger"]
+
+remove sid
+
+   NAME -ecs-task-secret -->policy_name
+
+   Attach one more policy ---ECSTASK EXECUTION ROLE---> POLICY_name
+
+--->ECS
+	1)ECS CLUSTER-ECS_FARGATE_CLUSTER--AWS FARGATE--CREATE
+	
+	2)ECS TASK DEFINITION
+	ecs-fargate-task--AWS FARGATE- arm/64 - 1/3 - TASK EXECUTION ROLE ecs-task-execution-role-secret - TASK ROLE ecs-task-execution-role-secret
+	container-1 image uri from ECR 	8501 - container-1-8501-tcp	Add environament variable --secret manager- key name value from  -value arn----
+
+	 ADD LOG -secret amaner- key name-test value from  -value arn----
+		ECS_FARGATE_TASK Select deploy run task 
+
+	connected to existing cluster ---LAUNCH TYPE ---Networking ---PUblic-on- Create
+
+--->Cluster-task-task-networking-eni id-security group-custom 8501 ipv4 create
+
+
+--->Select public ip ,.....:8501 run
+
+
